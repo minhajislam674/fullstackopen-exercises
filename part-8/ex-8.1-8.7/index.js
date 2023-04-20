@@ -155,6 +155,14 @@ const resolvers = {
   },
   Mutation: {
     addBook: (root, args) => {
+      //before adding, find books to see same book already exits, if so return error
+      const bookExists = books.find((book) => book.title === args.title);
+      if (bookExists) {
+        throw new UserInputError("Book already exists", {
+          invalidArgs: args.title,
+        });
+      }
+
       const book = { ...args, id: uuid() };
       books = books.concat(book);
       const authorExists = authors.find(
